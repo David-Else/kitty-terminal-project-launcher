@@ -1,0 +1,47 @@
+#!/bin/sh
+
+[ ! "${TERM}" = "xterm-kitty" ] && echo "This script must be run in Kitty terminal." && exit 1
+[ -z "$EDITOR" ] && echo "Warning: \$EDITOR variable is not set." && exit 1
+
+HISTORY_FILE="$HOME/.config/recent-projects/history.txt"
+touch "$HISTORY_FILE"
+[ ! -s "$HISTORY_FILE" ] && echo "Start of recently opened project history." >>"$HISTORY_FILE"
+
+select_project() {
+    read -p "Search [r]ecently opened projects history or [a]ll projects to open in $EDITOR: " -n 1 -r
+    echo ""
+
+    case "$REPLY" in
+    r) items=$(cat "$HISTORY_FILE") ;;
+    a) items=$(find ~/Documents/business ~/Documents/personal ~/Documents/apps-sites -maxdepth 2 -mindepth 1 -type d) ;;
+    *) echo "Invalid selection" && exit 1 ;;
+    esac
+
+    selected_dir=$(echo "$items" | fzf) || exit
+    project_name=${selected_dir##*/}
+
+    # Add the sected project to the first line of history.txt if not already present
+    grep -q "^$selected_dir$" "$HISTORY_FILE" || sed -i "1i$selected_dir" "$HISTORY_FILE"
+}
+
+detect_project_type_and_create_windows() {
+    kitty @ goto-layout tall # Note: make sure you have `enabled_layouts stack,tall` in kitty.conf
+    kitty @ set-window-title "$EDITOR:$project_name"
+    cd "$selected_dir" || exit 1
+
+    if [ -f "Cargo.toml" ] || [ -f "package.json" ]; then
+        kitty @ launch --title "Terminal:$project_name" --keep-focus --cwd="$selected_dir"
+    fi
+    if [ -d ".git" ]; then
+        kitty @ launch --title "Lazygit:$project_name" --keep-focus --cwd="$selected_dir" lazygit
+    fi
+}
+
+clear
+select_project
+detect_project_type_and_create_windows
+
+$EDITOR .
+
+kitty @ close-window --match title:^"Terminal:$project_name" 2>/dev/null
+kitty @ close-window --match title:^"Lazygit:$project_name" 2>/dev/null
