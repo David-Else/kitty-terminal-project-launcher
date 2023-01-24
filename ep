@@ -22,7 +22,8 @@ select_project() {
     project_name=${selected_dir##*/}
 
     # Add the sected project to the first line of history.txt if not already present
-    grep -q "^$selected_dir$" "$HISTORY_FILE" || sed -i "1i$selected_dir" "$HISTORY_FILE"
+    grep -q "^$selected_dir$" "$HISTORY_FILE" && sed -i "\|^$selected_dir$|d" "$HISTORY_FILE"
+    sed -i "1i$selected_dir" "$HISTORY_FILE"
 }
 
 detect_project_type_and_create_windows() {
