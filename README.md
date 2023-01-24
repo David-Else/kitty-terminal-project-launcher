@@ -76,3 +76,7 @@ Requirements:
 
 - [Kitty terminal](https://github.com/kovidgoyal/kitty).
 - [fzf](https://github.com/junegunn/fzf).
+
+Optional requirements:
+
+- [Lazygit](https://github.com/jesseduffield/lazygit)
