@@ -34,10 +34,9 @@ Make sure to close them again at the end of the script:
 
 ```sh
 kitty @ close-window --match title:^"Terminal:$project_name" --ignore-no-match
-kitty @ close-window --match title:^"Lazygit:$project_name" --ignore-no-match
 ```
 
-3. To achieve the recommended workflow, add the following to your `kitty.config`
+3. To achieve the recommended workflow, add the following to your `kitty.conf`
    file:
 
 ```sh
