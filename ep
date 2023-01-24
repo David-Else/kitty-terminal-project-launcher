@@ -1,4 +1,5 @@
 #!/bin/sh
+set -eu
 
 [ ! "${TERM}" = "xterm-kitty" ] && echo "This script must be run in Kitty terminal." && exit 1
 [ -z "$EDITOR" ] && echo "Warning: \$EDITOR variable is not set." && exit 1
@@ -43,5 +44,5 @@ detect_project_type_and_create_windows
 
 $EDITOR .
 
-kitty @ close-window --match title:^"Terminal:$project_name" 2>/dev/null
-kitty @ close-window --match title:^"Lazygit:$project_name" 2>/dev/null
+kitty @ close-window --match title:^"Terminal:$project_name" --ignore-no-match
+kitty @ close-window --match title:^"Lazygit:$project_name" --ignore-no-match
