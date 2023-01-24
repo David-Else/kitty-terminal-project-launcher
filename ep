@@ -21,7 +21,7 @@ select_project() {
     selected_dir=$(echo "$items" | fzf) || exit
     project_name=${selected_dir##*/}
 
-    # Add the sected project to the first line of history.txt if not already present
+    # Add the selected project to the first line of history.txt if not already present
     grep -q "^$selected_dir$" "$HISTORY_FILE" && sed -i "\|^$selected_dir$|d" "$HISTORY_FILE"
     sed -i "1i$selected_dir" "$HISTORY_FILE"
 }
