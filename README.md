@@ -3,6 +3,8 @@
 Easily open and manage your local coding projects with
 [kitty terminal](https://github.com/kovidgoyal/kitty).
 
+![Screenshot](./screenshot.png)
+
 ### Features:
 
 - Fuzzy search for all or just recent projects using
