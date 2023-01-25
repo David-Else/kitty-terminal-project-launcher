@@ -18,22 +18,19 @@ create_new_project_directory() {
 
     PS3='Please select a level 2 directory: '
     select project_dir_to_add_to in "${level_2_dirs[@]}"; do
-        if [[ -n $project_dir_to_add_to ]]; then
-            break
-        else
-            echo ">>> Invalid Selection"
-        fi
+        test -n "$project_dir_to_add_to" && break
+        echo ">>> Invalid Selection"
     done
 
     echo ""
     PS3='Please select a level 3 directory: '
     cd "$project_dir_to_add_to" || exit
-    select d in */; do
-        test -n "$d" && break
+    select level_3_dir in */; do
+        test -n "$level_3_dir" && break
         echo ">>> Invalid Selection"
     done
 
-    project_dir_to_add_to="$project_dir_to_add_to$d$title"
+    project_dir_to_add_to="$project_dir_to_add_to$level_3_dir$title"
     mkdir "$project_dir_to_add_to" && touch "$project_dir_to_add_to"/README.md
     echo "$project_dir_to_add_to created."
     exit 0
