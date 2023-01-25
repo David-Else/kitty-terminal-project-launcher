@@ -1,6 +1,6 @@
 ## Kitty Terminal Project Launcher
 
-Easily open and manage your local coding projects with
+Easily open and manage your local coding projects inside
 [kitty terminal](https://github.com/kovidgoyal/kitty).
 
 ![Screenshot](./screenshot.png)
@@ -15,16 +15,48 @@ Easily open and manage your local coding projects with
 
 ### Configuration
 
-1. Edit the following line of code to use the folders that contain your
-   projects, and alter `maxdepth 2` if required:
+1. Edit the script to point to your project folders and select the `maxdepth`
+   you wish to search:
 
 ```sh
 a) items=$(find ~/Documents/business ~/Documents/personal ~/Documents/apps-sites -maxdepth 2 -mindepth 1 -type d) ;;
 ```
 
-2. Decide on which windows to open based on which files or directories are in
-   the project root, for example, to open an additional terminal window for Rust
-   and TypeScript projects the included default is:
+```
+├── Documents
+│   ├── apps-sites
+│   │   └── project-1 < maxdepth 2 stops searching here
+│   ├── business
+│   │   ├── project-1
+│   └── personal
+│       └── project-2
+
+The search results will be:
+
+- project-1
+- project-2
+- project-3
+```
+
+2. Decide on which terminal windows to open based on which files or directories
+   are in the project root.
+
+```
+├── Documents
+│   ├── apps-sites
+│   │   └── project-1
+│   │       ├── src
+│   │       │   ├── modules
+│   │       │   │   ├── model.js
+│   │       │   │   └── view.js
+│   │       │   └── main.js
+│   │       ├── package.json < detects JS/TS in project root
+│   │       ├── README.md
+│   │       └── .gitignore
+```
+
+For example, to open an additional terminal window for Rust and JS/TS projects
+the included default is:
 
 ```sh
     if [ -f "Cargo.toml" ] || [ -f "package.json" ]; then
@@ -79,4 +111,4 @@ Requirements:
 
 Optional requirements:
 
-- [Lazygit](https://github.com/jesseduffield/lazygit)
+- [Lazygit](https://github.com/jesseduffield/lazygit).
