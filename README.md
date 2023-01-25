@@ -12,14 +12,16 @@ Easily open and manage your local coding projects inside
 - Open projects with your default terminal editor.
 - Open preconfigured sets of named windows for different project types.
 - Automatic closing of windows when exiting your editor.
+- Create new project folders based on your chosen directory structure
 
 ### Configuration
 
-1. Edit the script to point to your project folders and select the `maxdepth`
-   you wish to search:
+1. Edit the script to point to your project folders (`maxdepth` is hard coded to
+   `2`):
 
 ```sh
-a) items=$(find ~/Documents/business ~/Documents/personal ~/Documents/apps-sites -maxdepth 2 -mindepth 1 -type d) ;;
+level_1_dir="$HOME/Documents/"
+level_2_dirs=("$level_1_dir"/business "$level_1_dir"/personal "$level_1_dir"/apps-sites)
 ```
 
 ```
@@ -31,7 +33,7 @@ a) items=$(find ~/Documents/business ~/Documents/personal ~/Documents/apps-sites
 │   └── personal
 │       └── project-2
 
-The search results will be:
+If you created projects as above the search results would be:
 
 - project-1
 - project-2
@@ -100,7 +102,8 @@ map ctrl+[ previous_window
 
 1. Copy the `ep` script into your `$PATH`.
 2. Run the command `ep` in your terminal.
-3. Follow the prompts to search and open your desired project.
+3. Follow the prompts to search and open your desired project or create a new
+   project folder. A `README.md` file is placed inside new folders by default.
 4. Start coding in your preconfigured and organized workspace.
 5. Quit using your editor to close the other windows.
 
