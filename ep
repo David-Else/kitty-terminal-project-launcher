@@ -4,34 +4,36 @@ set -eu
 [ ! "${TERM}" = "xterm-kitty" ] && echo "This script must be run in Kitty terminal." && exit 1
 [ -z "$EDITOR" ] && echo "Warning: \$EDITOR variable is not set." && exit 1
 
-level_1_dir="$HOME/Documents/"
-level_2_dirs=("$level_1_dir"/business "$level_1_dir"/personal "$level_1_dir"/apps-sites)
-project_dir_to_add_to="$level_1_dir" # to be mutated
+level_1_dir="$HOME/Documents"
+level_2_dirs=("$level_1_dir"/business/ "$level_1_dir"/personal/ "$level_1_dir"/apps-sites/)
 recent_projects_history_file="$HOME/.config/recent-projects/history.txt"
 
 touch "$recent_projects_history_file"
 [ ! -s "$recent_projects_history_file" ] && echo "Start of recently opened project history." >>"$recent_projects_history_file"
-
-add_selected_directory_to_base_dir() {
-    cd "$project_dir_to_add_to" || exit
-    select d in */; do
-        test -n "$d" && break
-        echo ">>> Invalid Selection"
-    done
-    project_dir_to_add_to="$project_dir_to_add_to$d"
-}
 
 create_new_project_directory() {
     read -rp 'What is the title of this project? ' title
     title=${title,,}    # make title lowercase
     title=${title// /-} # remove spaces and replace with -
 
-    for i in {1..2}; do
-        echo "Please select level $i folder to put it in:"
-        add_selected_directory_to_base_dir
+    PS3='Please select a level 2 directory: '
+    select project_dir_to_add_to in "${level_2_dirs[@]}"; do
+        if [[ -n $project_dir_to_add_to ]]; then
+            break
+        else
+            echo ">>> Invalid Selection"
+        fi
     done
 
-    project_dir_to_add_to="$project_dir_to_add_to$title"
+    echo ""
+    PS3='Please select a level 3 directory: '
+    cd "$project_dir_to_add_to" || exit
+    select d in */; do
+        test -n "$d" && break
+        echo ">>> Invalid Selection"
+    done
+
+    project_dir_to_add_to="$project_dir_to_add_to$d$title"
     mkdir "$project_dir_to_add_to" && touch "$project_dir_to_add_to"/README.md
     echo "$project_dir_to_add_to created."
     exit 0
