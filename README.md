@@ -27,11 +27,14 @@ level_2_dirs=("$level_1_dir"/business "$level_1_dir"/personal "$level_1_dir"/app
 ```
 ├── Documents
 │   ├── apps-sites
-│   │   └── project-1 < maxdepth 2 stops searching here
+│   │   └── rust              < maxdepth 2 searches for projects below
+│   │       ├── project-1
+│   │       └── project-2
 │   ├── business
-│   │   ├── project-1
+│   │   └── documents         <
+│   │       └── project-3
 │   └── personal
-│       └── project-2
+│       └── blog              <
 
 If you created projects as above the search results would be:
 
@@ -46,15 +49,16 @@ If you created projects as above the search results would be:
 ```
 ├── Documents
 │   ├── apps-sites
-│   │   └── project-1
-│   │       ├── src
-│   │       │   ├── modules
-│   │       │   │   ├── model.js
-│   │       │   │   └── view.js
-│   │       │   └── main.js
-│   │       ├── package.json < detects JS/TS in project root
-│   │       ├── README.md
-│   │       └── .gitignore
+│   │   └── rust
+│   │       └── project-1
+│   │           ├── src
+│   │           │   ├── modules
+│   │           │   │   ├── model.js
+│   │           │   │   └── view.js
+│   │           │   └── main.js
+│   │           ├── package.json    < detects JS/TS in project root
+│   │           ├── README.md
+│   │           └── .gitignore
 ```
 
 For example, to open an additional terminal window for Rust and JS/TS projects
