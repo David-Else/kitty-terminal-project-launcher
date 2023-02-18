@@ -119,3 +119,12 @@ Requirements:
 Optional requirements:
 
 - [Lazygit](https://github.com/jesseduffield/lazygit).
+
+Example Helix config for Rust:
+
+```toml
+[keys.normal.space]
+c = ":sh kitty @ send-text --match 'title:^Terminal' cargo run \\\\n" 
+t = ":sh kitty @ send-text --match 'title:^Terminal' cargo test \\\\n"
+T = ":pipe-to xargs -I {} kitty @ send-text --match 'title:^Terminal' cargo test {}\\\\n"
+```
