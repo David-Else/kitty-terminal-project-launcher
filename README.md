@@ -124,6 +124,5 @@ Example Helix config for Rust:
 
 ```toml
 [keys.normal.space]
-c = ":sh kitty @ send-text --match 'title:^Terminal' cargo run \\\\n" 
-t = ":sh kitty @ send-text --match 'title:^Terminal' 'clear \\ncargo test \\n'"
+c = { r = ":sh kitty @ send-text --match 'title:^Terminal' cargo run \\\\n", t = ":sh kitty @ send-text --match 'title:^Terminal' 'clear \\ncargo test \\n'" }
 ```
