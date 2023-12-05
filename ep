@@ -66,7 +66,7 @@ detect_project_type_and_create_windows() {
         kitty @ launch --title "Terminal" --keep-focus --cwd="$selected_dir"
     fi
     if [ -d ".git" ]; then
-        kitty @ launch --title "Lazygit:$project_name" --keep-focus --cwd="$selected_dir" lazygit
+        kitty @ launch --title "Lazygit:$project_name" --keep-focus --cwd="$selected_dir" --copy-env lazygit
     fi
 }
 
