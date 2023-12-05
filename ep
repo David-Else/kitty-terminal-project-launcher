@@ -63,10 +63,10 @@ detect_project_type_and_create_windows() {
     cd "$selected_dir" || exit 1
 
     if [ -f "Cargo.toml" ] || [ -f "package.json" ]; then
-        kitty @ launch --title "Terminal" --keep-focus --cwd="$selected_dir"
+        kitty @ launch --title "hx-terminal" --keep-focus --cwd="$selected_dir"
     fi
     if [ -d ".git" ]; then
-        kitty @ launch --title "Lazygit:$project_name" --keep-focus --cwd="$selected_dir" --copy-env lazygit
+        kitty @ launch --title "hx-lazygit" --keep-focus --cwd="$selected_dir" --copy-env lazygit
     fi
 }
 
