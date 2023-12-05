@@ -76,5 +76,5 @@ detect_project_type_and_create_windows
 
 $EDITOR .
 
-kitty @ close-window --match title:^"Terminal" --ignore-no-match
-kitty @ close-window --match title:^"Lazygit:$project_name" --ignore-no-match
+kitty @ close-window --match title:^"hx-terminal" --ignore-no-match
+kitty @ close-window --match title:^"hx-lazygit" --ignore-no-match
