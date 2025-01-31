@@ -13,61 +13,54 @@ touch "$recent_projects_history_file"
 [ ! -s "$recent_projects_history_file" ] && echo "Start of recently opened project history." >>"$recent_projects_history_file"
 
 create_new_project_directory() {
-    read -rp 'What is the title of this project? ' title
-    title=${title,,}    # make title lowercase
-    title=${title// /-} # remove spaces and replace with -
+  read -rp 'What is the title of this project? ' title
+  title=${title,,}    # make title lowercase
+  title=${title// /-} # remove spaces and replace with -
 
-    PS3='Please select a level 2 directory: '
-    select project_dir_to_add_to in "${level_2_dirs[@]}"; do
-        test -n "$project_dir_to_add_to" && break
-        echo ">>> Invalid Selection"
-    done
+  PS3='Please select a level 2 directory: '
+  select project_dir_to_add_to in "${level_2_dirs[@]}"; do
+    test -n "$project_dir_to_add_to" && break
+    echo ">>> Invalid Selection"
+  done
 
-    echo ""
-    PS3='Please select a level 3 directory: '
-    cd "$project_dir_to_add_to" || exit
-    select level_3_dir in */; do
-        test -n "$level_3_dir" && break
-        echo ">>> Invalid Selection"
-    done
+  echo ""
+  PS3='Please select a level 3 directory: '
+  cd "$project_dir_to_add_to" || exit
+  select level_3_dir in */; do
+    test -n "$level_3_dir" && break
+    echo ">>> Invalid Selection"
+  done
 
-    project_dir_to_add_to="$project_dir_to_add_to$level_3_dir$title"
-    mkdir "$project_dir_to_add_to" && touch "$project_dir_to_add_to"/README.md
-    echo "$project_dir_to_add_to created."
-    exit 0
+  project_dir_to_add_to="$project_dir_to_add_to$level_3_dir$title"
+  mkdir "$project_dir_to_add_to" && touch "$project_dir_to_add_to"/README.md
+  echo "$project_dir_to_add_to created."
+  exit 0
 }
 
 select_project() {
-    read -p "Create a [n]ew project, or search [r]ecent projects or [a]ll projects to open in $EDITOR: " -n 1 -r
-    echo ""
+  read -p "Create a [n]ew project, or search [r]ecent projects or [a]ll projects to open in $EDITOR: " -n 1 -r
+  echo ""
 
-    case "$REPLY" in
-    n) create_new_project_directory ;;
-    r) items=$(cat "$recent_projects_history_file") ;;
-    a) mapfile -t items < <(find "${level_2_dirs[@]}" -maxdepth 2 -mindepth 1 -type d) ;;
-    *) echo "Invalid selection" && exit 1 ;;
-    esac
+  case "$REPLY" in
+  n) create_new_project_directory ;;
+  r) items=$(cat "$recent_projects_history_file") ;;
+  a) mapfile -t items < <(find "${level_2_dirs[@]}" -maxdepth 2 -mindepth 1 -type d) ;;
+  *) echo "Invalid selection" && exit 1 ;;
+  esac
 
-    IFS=$'\n'
-    selected_dir=$(echo "${items[*]}" | fzf) || exit
-    project_name=${selected_dir##*/}
+  IFS=$'\n'
+  selected_dir=$(echo "${items[*]}" | fzf) || exit
+  project_name=${selected_dir##*/}
 
-    # Add the selected project to the first line of history.txt if not already present
-    grep -q "^$selected_dir$" "$recent_projects_history_file" && sed -i "\|^$selected_dir$|d" "$recent_projects_history_file"
-    sed -i "1i$selected_dir" "$recent_projects_history_file"
+  # Add the selected project to the first line of history.txt if not already present
+  grep -q "^$selected_dir$" "$recent_projects_history_file" && sed -i "\|^$selected_dir$|d" "$recent_projects_history_file"
+  sed -i "1i$selected_dir" "$recent_projects_history_file"
 }
 
 detect_project_type_and_create_windows() {
-    kitty @ goto-layout tall # Note: make sure you have `enabled_layouts stack,tall` in kitty.conf
-    kitty @ set-window-title "$EDITOR:$project_name"
-    cd "$selected_dir" || exit 1
-
-    if [ -f "Cargo.toml" ] || [ -f "package.json" ]; then
-        kitty @ launch --title "terminal" --keep-focus --cwd="$selected_dir"
-    fi
-    if [ -d ".git" ]; then
-        kitty @ launch --title "lazygit" --keep-focus --cwd="$selected_dir" --copy-env lazygit
-    fi
+  kitty @ goto-layout tall # Note: make sure you have `enabled_layouts stack,tall` in kitty.conf
+  kitty @ set-window-title --temporary "$EDITOR:$project_name"
+  cd "$selected_dir" || exit 1
 }
 
 clear
@@ -75,6 +68,3 @@ select_project
 detect_project_type_and_create_windows
 
 $EDITOR .
-
-kitty @ close-window --match title:^"terminal" --ignore-no-match
-kitty @ close-window --match title:^"lazygit" --ignore-no-match
