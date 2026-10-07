@@ -57,6 +57,43 @@ select_project() {
   sed -i "1i$selected_dir" "$recent_projects_history_file"
 }
 
+check_for_git_updates() {
+  local remote upstream behind
+
+  # Skip unless the selected project is a git repo with a remote
+  remote=$(git -C "$selected_dir" remote 2>/dev/null | head -n 1)
+  if [ -z "$remote" ]; then
+    return 0
+  fi
+
+  echo "Checking '$remote' for updates..."
+  if ! git -C "$selected_dir" fetch --quiet "$remote" 2>/dev/null; then
+    echo "Could not reach '$remote', skipping update check."
+    return 0
+  fi
+
+  upstream=$(git -C "$selected_dir" rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null) || upstream=""
+  if [ -z "$upstream" ]; then
+    return 0
+  fi
+
+  behind=$(git -C "$selected_dir" rev-list --count "HEAD..$upstream" 2>/dev/null) || behind=0
+  if [ "$behind" -eq 0 ]; then
+    return 0
+  fi
+
+  echo "There are $behind new commit(s) on '$upstream'."
+  read -rp "Pull them now? [y/N] " -n 1 -r || true
+  echo ""
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if git -C "$selected_dir" pull; then
+      echo "Pulled successfully."
+    else
+      echo "Pull failed, continuing with the local version."
+    fi
+  fi
+}
+
 detect_project_type_and_create_windows() {
   kitty @ goto-layout tall # Note: make sure you have `enabled_layouts stack,tall` in kitty.conf
   kitty @ set-window-title --temporary "$EDITOR:$project_name"
@@ -65,6 +102,7 @@ detect_project_type_and_create_windows() {
 
 clear
 select_project
+check_for_git_updates
 detect_project_type_and_create_windows
 
 $EDITOR .
